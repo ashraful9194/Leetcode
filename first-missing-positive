@@ -1,0 +1,27 @@
+class Solution {
+public:
+   int firstMissingPositive(vector<int>& nums) {
+       int len = nums.size();
+       int now = 0;
+       while (now < len)
+       {
+           int currVal = nums[now];
+           if (currVal <= 0 || currVal > len)
+               nums[now] = 0, ++now;
+           else if (currVal != now+1 && nums[currVal-1]!=currVal)
+               swap (nums[now], nums[currVal-1]);
+           else
+               ++now;
+       }
+
+       int currMex = 1;
+       for (int i=0; i<len; i++)
+       {
+           if(nums[i]==currMex)
+               ++currMex;
+           else break;
+       }
+       
+       return currMex;
+    }
+};
