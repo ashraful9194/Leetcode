@@ -1,0 +1,57 @@
+// O(N) space complexity
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        const int mx = 1e5+3;
+        int size = prices.size();
+        int dp[mx];
+
+        int ans = 0, suffMax = prices[size-1], prefMin = prices[0];
+        dp[size]=dp[size+1]=0;
+        for(int i=size-1; i>=1; i--)
+        {
+            dp[i] = max(0, suffMax - prices[i-1]);
+            dp[i] = max(dp[i],dp[i+1]);
+            suffMax = max(suffMax, prices[i-1]);
+        }
+
+        for(int i=2; i<=size; i++)
+        {
+            ans=max(ans, max(0, prices[i-1] - prefMin) + dp[i+1]);
+            prefMin = min(prefMin, prices[i-1]);
+        }
+
+        return ans;
+    }
+};
+
+// O(1) space complexity
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        const int mx = 1e5+3;
+        int size = prices.size();
+        int dp[4];
+        dp[0]=dp[2]=-1e5;
+        dp[1]=dp[3]=0;
+
+        int ans=0;
+        for(int i=0; i<size; i++) {
+            for(int j=0; j<4; j++) {
+                if (j>i) break;
+                if (j==0) {
+                    dp[j]=max(dp[j], -prices[i]);
+                }
+                else if (j%2) {
+                    dp[j]=max(dp[j], dp[j-1]+prices[i]);
+                }
+                else {
+                    dp[j]=max(dp[j], dp[j-1]-prices[i]);
+                }
+            }
+            ans=max({ans, dp[1], dp[3]});
+        }
+
+        return ans;
+    }
+};
