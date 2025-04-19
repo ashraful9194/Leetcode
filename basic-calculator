@@ -1,0 +1,47 @@
+int calculate(string s) {
+    int length = s.size();
+
+    stack<char>signs;
+    int posOrNeg = 1;
+    int index = 0, ans = 0;
+
+    while(index<length) {
+        if(s[index]==' ') {
+            ++index;
+            continue;
+        }
+        else if(s[index]=='(' || s[index]=='+') {
+            signs.push(s[index]);
+            ++index;
+        }
+        else if (s[index]=='-') {
+            posOrNeg*=(-1);
+            signs.push('-');
+            ++index;
+        }
+        else if(s[index]>='0' && s[index]<='9') {
+            int value = 0;
+
+            while(index<length && s[index]>='0' && s[index]<='9') {
+                value*=10;
+                value+=(s[index]-'0');
+                ++index;
+            }
+            ans+=(posOrNeg*value);
+            if(!signs.empty() && signs.top()!='(') {
+                if(signs.top()=='-') posOrNeg*=(-1);
+                signs.pop();
+            }
+        }
+        else if (s[index]==')') {
+            signs.pop();
+            if(!signs.empty() && signs.top()!='(') {
+                if(signs.top()=='-') posOrNeg*=(-1);
+                signs.pop();
+            }
+            ++index;
+        }
+    }
+
+    return ans;
+}
