@@ -1,0 +1,32 @@
+class Solution {
+public:
+    static constexpr int X[] = {-1, 1, 0, 0};
+    static constexpr int Y[] = {0, 0, 1, -1};
+    #define isValid(x, y, n, m) (x>=0 && x<n && y>=0 && y<m)
+
+    int minTimeToReach(vector<vector<int>>& moveTime) {
+        int n = moveTime.size();
+        int m = moveTime[0].size();
+        priority_queue<tuple<int, int, int>>pq;
+        vector<vector<int>>minimum_cost(n, vector<int>(m, INT_MAX));
+
+        minimum_cost[0][0] = 0;
+        pq.push({0,0,0});
+        while(!pq.empty()) {
+            auto [cost, x, y] = pq.top();
+            pq.pop();
+            if(cost>minimum_cost[x][y]) continue;
+            for(int i=0; i<4; i++) {
+                int x1 = x+X[i];
+                int y1 = y+Y[i];
+                if(isValid(x1, y1, n, m) && minimum_cost[x1][y1] > max(0, moveTime[x1][y1]+cost)-cost+1) {
+                    minimum_cost[x1][y1] = max(0, moveTime[x1][y1]+cost)-cost+1;
+                    pq.push({-minimum_cost[x1][y1], x1, y1});
+                }
+
+            }
+        }
+
+        return minimum_cost[n-1][m-1];
+    }
+};
