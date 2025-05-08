@@ -1,0 +1,21 @@
+Time Complexity: O(N).
+Space Complexity: O(1).
+
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        if(!head) return false;
+        ListNode* tortoise = head;
+        ListNode* hare = head->next;
+        
+        while(hare) {
+            if(hare==tortoise) return true;
+            tortoise = tortoise->next;
+            hare = hare->next;
+            if(!hare) break;
+            hare = hare->next;
+        }
+
+        return false;
+    }
+};
