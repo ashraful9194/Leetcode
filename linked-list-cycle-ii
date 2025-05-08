@@ -1,0 +1,29 @@
+Time Complexity: O(N)
+Space Complexity: O(1)
+
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        if(!head) return nullptr;
+        ListNode* tortoise = head;
+        ListNode* hare = head;
+
+        while(hare) {
+            tortoise = tortoise->next;
+            hare = hare->next;
+            if(!hare) return nullptr;
+            hare = hare->next;
+            if(tortoise==hare) { //Found a cycle
+                //Find the starting node
+                tortoise = head;
+                while(tortoise!=hare) {
+                    tortoise = tortoise->next;
+                    hare = hare->next;
+                }
+                return tortoise;
+            }
+        }
+        
+        return nullptr;
+    }
+};
