@@ -1,0 +1,58 @@
+class Solution {
+public:
+    vector<int>segtree;
+    unordered_map<long long, int>compress;
+
+    void update(int node, int l, int r, int index, int value) {
+        if(l>index || r<index) {
+            return;
+        }
+        if(l==r && l==index) {
+            ++segtree[node];
+            return;
+        }
+        int mid   = (l+r)>>1;
+        int left  = (node<<1);
+        int right = (left|1);
+        update(left, l, mid, index, value);
+        update(right, mid+1, r, index, value);
+        segtree[node] = segtree[left] + segtree[right];
+    }
+
+    int query(int node, int l, int r, int b, int e) {
+        if(l>e || r<b) {
+            return 0;
+        }
+        if(l>=b && r<=e) {
+            return segtree[node];
+        }
+        int mid   = (l+r)>>1;
+        int left  = (node<<1);
+        int right = (left|1);
+        return (query(left, l, mid, b, e) + query(right, mid+1, r, b, e));
+    }
+
+    int reversePairs(vector<int>& nums) {
+        int n = nums.size();
+        int now  = 1;
+        vector<long long> sorted;
+        for(int i=0; i<n; i++) {
+            sorted.push_back(nums[i]);
+            sorted.push_back(2LL*nums[i]);
+        }
+        sort(sorted.begin(), sorted.end());
+        for(int i=0; i<2*n; i++) {
+            if(compress[sorted[i]] == 0) {
+                compress[sorted[i]] = now++;
+            }
+        }
+        segtree.assign(10*now, 0);
+        int ans = 0;
+        for(int i=0; i<n; i++) {
+            ans+=query(1, 1, now-1, compress[2LL*nums[i]]+1, now-1);
+            update(1, 1, now-1, compress[nums[i]], 1);
+        }
+        
+        return ans;
+    }
+};
